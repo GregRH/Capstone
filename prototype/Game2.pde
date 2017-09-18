@@ -3,6 +3,7 @@ import processing.sound.*;
 final float SCALER = -1000; //change how much an affect loudness has
 float alpha = 0.5;
 float r_yvel = 0;
+float l_yvel = 0;
 float gravity = 9.8; //how fast the paddle falls
 float exceed_gravity = 9.8; //volume must exceed this to fall
 Amplitude amp;
@@ -24,7 +25,7 @@ int leftScore=0;
 int rightScore=0;
 
 void setup() {
-  //size(1500, paddleH0); //window size
+  //size(1500, 600); //window size
   /*press esc to quit full screen
     fullscreen(1) launches in screen one is there are multiple screens
     fullscreen(2) launches in screen two and so on */
@@ -37,10 +38,11 @@ void setup() {
   in.start();
   amp = new Amplitude(this);
   amp.input(in);
-  rightPadY = height - paddleH;
+  rightPadY = height/2;
+  leftPadY = height/2;
   rect(rightPadX,rightPadY,paddleW,paddleH);
-  rect(leftPadX,height,paddleW,paddleH);
-  println(width);
+  rect(leftPadX,leftPadY,paddleW,paddleH);
+  //println(width);
 }
 
 void draw() {
@@ -49,19 +51,19 @@ void draw() {
   text(rightScore, width-paddleH, 60);
   ellipseMode(CENTER);
   //Left Pad
- leftPadY=mouseY;
-  if (leftPadY<0)
-  {
-    rect(leftPadX,0,paddleW,paddleH); //can't go above screen 
+  l_yvel = (alpha * ((amp.analyze() * SCALER) - leftPadY))+((1-alpha) * leftPadY);
+  //println(r_yvel);
+  if(abs(l_yvel) < exceed_gravity){
+    l_yvel = gravity;
   }
-  else if(leftPadY<height-paddleH) //left paddle
-  {
-    rect(leftPadX, leftPadY, paddleW, paddleH); 
+  leftPadY += l_yvel;
+  if (leftPadY <= 0){
+    leftPadY = 0;
   }
-  else
-  {
-    rect(leftPadX, height-paddleH, paddleW, paddleH); 
+  else if(leftPadY >= height - 100){
+    leftPadY = height - 100;
   }
+  rect(leftPadX,leftPadY,paddleW,paddleH);
   //Right Pad
   
   r_yvel = (alpha * ((amp.analyze() * SCALER) - rightPadY))+((1-alpha) * rightPadY);
