@@ -1,7 +1,9 @@
 import processing.sound.*;
 
-final float SCALER = -1000; //change how much an affect loudness has
+final float SCALER = -2000; //change how much an affect loudness has
 float alpha = 0.5;
+float r_amp = 0;
+float l_amp = 0;
 float r_yvel = 0;
 float l_yvel = 0;
 float gravity = 9.8; //how fast the paddle falls
@@ -51,7 +53,8 @@ void draw() {
   text(rightScore, width-paddleH, 60);
   ellipseMode(CENTER);
   //Left Pad
-  l_yvel = (alpha * ((amp.analyze() * SCALER) - leftPadY))+((1-alpha) * leftPadY);
+  l_amp = amp.analyze();
+  l_yvel = (alpha * ((l_amp * SCALER) - leftPadY))+((1-alpha) * leftPadY);
   //println(r_yvel);
   if(abs(l_yvel) < exceed_gravity){
     l_yvel = gravity;
@@ -65,8 +68,8 @@ void draw() {
   }
   rect(leftPadX,leftPadY,paddleW,paddleH);
   //Right Pad
-  
-  r_yvel = (alpha * ((amp.analyze() * SCALER) - rightPadY))+((1-alpha) * rightPadY);
+  r_amp = amp.analyze();
+  r_yvel = (alpha * ((r_amp * SCALER) - rightPadY))+((1-alpha) * rightPadY);
   //println(r_yvel);
   if(abs(r_yvel) < exceed_gravity){
     r_yvel = gravity;
